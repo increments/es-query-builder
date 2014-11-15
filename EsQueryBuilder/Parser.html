@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+<meta charset="UTF-8">
+
+<title>class EsQueryBuilder::Parser - RDoc Documentation</title>
+
+<link href="../fonts.css" rel="stylesheet">
+<link href="../rdoc.css" rel="stylesheet">
+
+<script type="text/javascript">
+  var rdoc_rel_prefix = "../";
+</script>
+
+<script src="../js/jquery.js"></script>
+<script src="../js/navigation.js"></script>
+<script src="../js/search_index.js"></script>
+<script src="../js/search.js"></script>
+<script src="../js/searcher.js"></script>
+<script src="../js/darkfish.js"></script>
+
+
+<body id="top" role="document" class="class">
+<nav role="navigation">
+  <div id="project-navigation">
+    <div id="home-section" role="region" title="Quick navigation" class="nav-section">
+  <h2>
+    <a href="../index.html" rel="home">Home</a>
+  </h2>
+
+  <div id="table-of-contents-navigation">
+    <a href="../table_of_contents.html#pages">Pages</a>
+    <a href="../table_of_contents.html#classes">Classes</a>
+    <a href="../table_of_contents.html#methods">Methods</a>
+  </div>
+</div>
+
+    <div id="search-section" role="search" class="project-section initially-hidden">
+  <form action="#" method="get" accept-charset="utf-8">
+    <div id="search-field-wrapper">
+      <input id="search-field" role="combobox" aria-label="Search"
+             aria-autocomplete="list" aria-controls="search-results"
+             type="text" name="search" placeholder="Search" spellcheck="false"
+             title="Type to search, Up and Down to navigate, Enter to load">
+    </div>
+
+    <ul id="search-results" aria-label="Search Results"
+        aria-busy="false" aria-expanded="false"
+        aria-atomic="false" class="initially-hidden"></ul>
+  </form>
+</div>
+
+  </div>
+
+  
+
+  <div id="class-metadata">
+    <div id="sections-section" class="nav-section">
+  <h3>Sections</h3>
+
+  <ul class="link-list" role="directory">
+    
+      <li><a href="#5Buntitled-5D"></a></li>
+    
+      <li><a href="#Public">Public</a></li>
+    
+      <li><a href="#Internal">Internal</a></li>
+    
+  </ul>
+</div>
+
+    <div id="parent-class-section" class="nav-section">
+  <h3>Parent</h3>
+
+  
+  <p class="link">Object
+  
+</div>
+
+    
+    
+    <!-- Method Quickref -->
+<div id="method-list-section" class="nav-section">
+  <h3>Methods</h3>
+
+  <ul class="link-list" role="directory">
+    
+    <li ><a href="#method-c-new">::new</a>
+    
+    <li ><a href="#method-i-build_filter_hash">#build_filter_hash</a>
+    
+    <li ><a href="#method-i-build_queries">#build_queries</a>
+    
+    <li ><a href="#method-i-build_query_hash">#build_query_hash</a>
+    
+    <li ><a href="#method-i-connect_queries">#connect_queries</a>
+    
+    <li ><a href="#method-i-create_bool_filters">#create_bool_filters</a>
+    
+    <li ><a href="#method-i-create_bool_queries">#create_bool_queries</a>
+    
+    <li ><a href="#method-i-create_query">#create_query</a>
+    
+    <li ><a href="#method-i-parse">#parse</a>
+    
+    <li ><a href="#method-i-split_by_or_token">#split_by_or_token</a>
+    
+  </ul>
+</div>
+
+  </div>
+</nav>
+
+<main role="main" aria-labelledby="class-EsQueryBuilder::Parser">
+  <h1 id="class-EsQueryBuilder::Parser" class="class">
+    class EsQueryBuilder::Parser
+  </h1>
+
+  <section class="description">
+    
+<p>The class which has a responsibility for creatign a query.</p>
+
+<p>Note that the term “query” has two different meanings in the terminology of
+Elasticsearch. One represents how to retrieve documents from Elasticsearch
+and it consists of query and filter, so that is to say the other is a part
+of previous one. In this file, “query” and “query hash” represents the
+former and the latter respectively:</p>
+
+<pre>&quot;query&quot; = &quot;query hash&quot; + &quot;filter hash&quot;</pre>
+
+  </section>
+
+  
+  
+  
+  <section id="5Buntitled-5D" class="documentation-section">
+    
+
+    
+
+    
+
+    
+
+    
+  </section>
+
+  
+  
+  <section id="Public" class="documentation-section">
+    
+    <header class="documentation-section-title">
+      <h2>
+        Public
+      </h2>
+      <span class="section-click-top">
+        <a href="#top">&uarr; top</a>
+      </span>
+    </header>
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="public-class-Public-method-details" class="method-section">
+       <header>
+         <h3>Public Class Methods</h3>
+       </header>
+
+    
+      <div id="method-c-new" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">new</span><span
+            class="method-args">(all_query_fields = '_all', hierarchy_fields = [])</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Construct the parser object.</p>
+<dl class="rdoc-list note-list"><dt>query_fields
+<dd>
+<p>An Array of Strings for specifing allowed quering types (default: []).</p>
+</dd><dt>hierarchy_fields
+<dd>
+<p>An Array of Strings which treats the trailing slash character as a
+hierarchy (default: []).</p>
+</dd></dl>
+
+<h3 id="method-c-new-label-Returns">Returns<span><a href="#method-c-new-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns nothing.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="new-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 21</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">initialize</span>(<span class="ruby-identifier">all_query_fields</span> = <span class="ruby-string">&#39;_all&#39;</span>, <span class="ruby-identifier">hierarchy_fields</span> = [])
+  <span class="ruby-ivar">@all_query_fields</span> = <span class="ruby-identifier">all_query_fields</span>
+  <span class="ruby-ivar">@hierarchy_fields</span> = <span class="ruby-identifier">hierarchy_fields</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+     <section id="public-instance-Public-method-details" class="method-section">
+       <header>
+         <h3>Public Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-parse" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">parse</span><span
+            class="method-args">(tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Parse the given tokens and build a query hash.</p>
+<dl class="rdoc-list note-list"><dt>tokens
+<dd>
+<p>An Array of Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-parse-label-Returns">Returns<span><a href="#method-i-parse-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns a Hash for Elasticsearch client or nil.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="parse-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 31</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">parse</span>(<span class="ruby-identifier">tokens</span>)
+  <span class="ruby-identifier">connect_queries</span>(<span class="ruby-identifier">build_queries</span>(<span class="ruby-identifier">tokens</span>))
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+
+  
+  
+  <section id="Internal" class="documentation-section">
+    
+    <header class="documentation-section-title">
+      <h2>
+        Internal
+      </h2>
+      <span class="section-click-top">
+        <a href="#top">&uarr; top</a>
+      </span>
+    </header>
+    
+
+    
+
+    
+
+    
+
+    
+     <section id="private-instance-Internal-method-details" class="method-section">
+       <header>
+         <h3>Private Instance Methods</h3>
+       </header>
+
+    
+      <div id="method-i-build_filter_hash" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">build_filter_hash</span><span
+            class="method-args">(filter_tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Build a filter parameter hash by query tokens</p>
+<dl class="rdoc-list note-list"><dt>filter_tokens
+<dd>
+<p>An Array of filter Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-build_filter_hash-label-Returns">Returns<span><a href="#method-i-build_filter_hash-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns a Hash represents a filter hash.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="build_filter_hash-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 134</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">build_filter_hash</span>(<span class="ruby-identifier">filter_tokens</span>)
+  <span class="ruby-keyword">return</span> {} <span class="ruby-keyword">if</span> <span class="ruby-identifier">filter_tokens</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-identifier">must</span>, <span class="ruby-identifier">should</span>, <span class="ruby-identifier">must_not</span> = <span class="ruby-identifier">create_bool_filters</span>(<span class="ruby-identifier">filter_tokens</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">must</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">should</span>.<span class="ruby-identifier">empty?</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">must_not</span>.<span class="ruby-identifier">empty?</span>
+    <span class="ruby-comment"># Term filter is cached by default.</span>
+    <span class="ruby-identifier">must</span>.<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">bool</span> = {}
+    <span class="ruby-identifier">bool</span>[<span class="ruby-value">:must</span>]     = <span class="ruby-identifier">must</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">must</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">bool</span>[<span class="ruby-value">:should</span>]   = <span class="ruby-identifier">should</span>   <span class="ruby-keyword">if</span> <span class="ruby-identifier">should</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">bool</span>[<span class="ruby-value">:must_not</span>] = <span class="ruby-identifier">must_not</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">must_not</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    <span class="ruby-comment"># Bool filter is not cached by default.</span>
+    { <span class="ruby-identifier">bool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">bool</span>.<span class="ruby-identifier">merge</span>(<span class="ruby-identifier">_cache</span><span class="ruby-operator">:</span> <span class="ruby-keyword">true</span>) }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-build_queries" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">build_queries</span><span
+            class="method-args">(tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Convert the given tokens into sequence of queries.</p>
+<dl class="rdoc-list note-list"><dt>tokens
+<dd>
+<p>An Array of Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-build_queries-label-Returns">Returns<span><a href="#method-i-build_queries-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns an Array of Hashes. Each hash represents a query.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="build_queries-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 42</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">build_queries</span>(<span class="ruby-identifier">tokens</span>)
+  <span class="ruby-identifier">split_by_or_token</span>(<span class="ruby-identifier">tokens</span>).<span class="ruby-identifier">map</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">or_less_tokens</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">query_hash</span> = <span class="ruby-identifier">build_query_hash</span>(<span class="ruby-identifier">or_less_tokens</span>.<span class="ruby-identifier">select</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:query?</span>))
+    <span class="ruby-identifier">filter_hash</span> = <span class="ruby-identifier">build_filter_hash</span>(<span class="ruby-identifier">or_less_tokens</span>.<span class="ruby-identifier">select</span>(<span class="ruby-operator">&amp;</span><span class="ruby-value">:filter?</span>))
+    <span class="ruby-identifier">create_query</span>(<span class="ruby-identifier">query_hash</span>, <span class="ruby-identifier">filter_hash</span>)
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-build_query_hash" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">build_query_hash</span><span
+            class="method-args">(query_tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Build a query hash by query tokens</p>
+<dl class="rdoc-list note-list"><dt>query_tokens
+<dd>
+<p>An Array of query Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-build_query_hash-label-Returns">Returns<span><a href="#method-i-build_query_hash-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns a Hash represents a query hash.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="build_query_hash-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 116</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">build_query_hash</span>(<span class="ruby-identifier">query_tokens</span>)
+  <span class="ruby-keyword">return</span> { <span class="ruby-identifier">match_all</span><span class="ruby-operator">:</span> {} } <span class="ruby-keyword">if</span> <span class="ruby-identifier">query_tokens</span>.<span class="ruby-identifier">empty?</span>
+  <span class="ruby-identifier">must</span>, <span class="ruby-identifier">must_not</span> = <span class="ruby-identifier">create_bool_queries</span>(<span class="ruby-identifier">query_tokens</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">must</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">==</span> <span class="ruby-value">1</span> <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">must_not</span>.<span class="ruby-identifier">empty?</span>
+    <span class="ruby-identifier">must</span>.<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">bool</span> = {}
+    <span class="ruby-identifier">bool</span>[<span class="ruby-value">:must</span>]     = <span class="ruby-identifier">must</span>     <span class="ruby-keyword">if</span> <span class="ruby-identifier">must</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    <span class="ruby-identifier">bool</span>[<span class="ruby-value">:must_not</span>] = <span class="ruby-identifier">must_not</span> <span class="ruby-keyword">if</span> <span class="ruby-identifier">must_not</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    { <span class="ruby-identifier">bool</span><span class="ruby-operator">:</span> <span class="ruby-identifier">bool</span> }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-connect_queries" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">connect_queries</span><span
+            class="method-args">(queries)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Merge sequence of queries into a single query.</p>
+<dl class="rdoc-list note-list"><dt>queries
+<dd>
+<p>An Array of Hashes. Eash hash represents a query.</p>
+</dd></dl>
+
+<h3 id="method-i-connect_queries-label-Returns">Returns<span><a href="#method-i-connect_queries-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns a Hash or nil.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="connect_queries-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 55</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">connect_queries</span>(<span class="ruby-identifier">queries</span>)
+  <span class="ruby-keyword">case</span> <span class="ruby-identifier">queries</span>.<span class="ruby-identifier">size</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">0</span>
+    <span class="ruby-keyword">nil</span>
+  <span class="ruby-keyword">when</span> <span class="ruby-value">1</span>
+    <span class="ruby-identifier">queries</span>.<span class="ruby-identifier">first</span>
+  <span class="ruby-keyword">else</span>
+    {
+      <span class="ruby-identifier">bool</span><span class="ruby-operator">:</span> {
+        <span class="ruby-identifier">should</span><span class="ruby-operator">:</span> <span class="ruby-identifier">queries</span>
+      }
+    }
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-create_bool_filters" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_bool_filters</span><span
+            class="method-args">(filter_tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create boolean filter based on the filter matches. If a field query in
+hierarchy fields ends with &#39;/&#39;, it matches to all descendant terms.</p>
+<dl class="rdoc-list note-list"><dt>query_tokens
+<dd>
+<p>An Array of filter Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-create_bool_filters-label-Examples">Examples<span><a href="#method-i-create_bool_filters-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<pre class="ruby"><span class="ruby-comment"># When &#39;tag:&quot;foo bar&quot;&#39;</span>
+<span class="ruby-identifier">create_bool_filters</span>([<span class="ruby-operator">...</span>])
+<span class="ruby-comment"># =&gt; [[{ term: { tag: &#39;foo&#39; }}, { term: { tag: &#39;bar&#39; }], [], []]</span>
+
+<span class="ruby-comment"># When &#39;-tag:foo&#39;</span>
+<span class="ruby-identifier">create_bool_filters</span>([<span class="ruby-operator">...</span>])
+<span class="ruby-comment"># =&gt; [[], [], [{ term: { tag: &#39;foo&#39; } }]]</span>
+
+<span class="ruby-comment"># Suppose @hierarchy_fields contains &#39;tag&#39;</span>
+
+<span class="ruby-comment"># When &#39;tag:foo/&#39;</span>
+<span class="ruby-identifier">create_bool_filters</span>([<span class="ruby-operator">...</span>])
+<span class="ruby-comment"># =&gt; [[], [{ term: { tag: &#39;foo&#39; } }, { prefix: { tag: &#39;foo/&#39; } }], []]</span>
+
+<span class="ruby-comment"># When &#39;-tag:foo/&#39;</span>
+<span class="ruby-identifier">create_bool_filters</span>([<span class="ruby-operator">...</span>])
+<span class="ruby-comment"># =&gt; [[], [], [{ prefix: { tag: &#39;foo/&#39; } }, { term: { tag: &#39;foo&#39; } }]]</span>
+</pre>
+
+<h3 id="method-i-create_bool_filters-label-Returns">Returns<span><a href="#method-i-create_bool_filters-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns an Array consists of must, should and must_not filters arrays.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="create_bool_filters-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 206</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create_bool_filters</span>(<span class="ruby-identifier">filter_tokens</span>)
+  <span class="ruby-identifier">must</span>, <span class="ruby-identifier">should</span>, <span class="ruby-identifier">must_not</span> = [], [], []
+  <span class="ruby-identifier">filter_tokens</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">token</span><span class="ruby-operator">|</span>
+    <span class="ruby-identifier">token</span>.<span class="ruby-identifier">term</span>.<span class="ruby-identifier">split</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">term</span><span class="ruby-operator">|</span>
+      <span class="ruby-keyword">if</span> <span class="ruby-ivar">@hierarchy_fields</span>.<span class="ruby-identifier">include?</span>(<span class="ruby-identifier">token</span>.<span class="ruby-identifier">field</span>) <span class="ruby-operator">&amp;&amp;</span> <span class="ruby-identifier">term</span>.<span class="ruby-identifier">end_with?</span>(<span class="ruby-string">&#39;/&#39;</span>)
+        <span class="ruby-identifier">cond</span> = <span class="ruby-identifier">token</span>.<span class="ruby-identifier">minus?</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">must_not</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">should</span>
+        <span class="ruby-identifier">cond</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-identifier">prefix</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">token</span>.<span class="ruby-identifier">field</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">term</span>.<span class="ruby-identifier">downcase</span> } }
+        <span class="ruby-comment"># Exactly matches to the tag.</span>
+        <span class="ruby-identifier">cond</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-identifier">term</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">token</span>.<span class="ruby-identifier">field</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">term</span>[<span class="ruby-value">0</span><span class="ruby-operator">...</span><span class="ruby-value">-1</span>].<span class="ruby-identifier">downcase</span> } }
+      <span class="ruby-keyword">else</span>
+        <span class="ruby-identifier">cond</span> = <span class="ruby-identifier">token</span>.<span class="ruby-identifier">minus?</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">must_not</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">must</span>
+        <span class="ruby-identifier">cond</span> <span class="ruby-operator">&lt;&lt;</span> { <span class="ruby-identifier">term</span><span class="ruby-operator">:</span> { <span class="ruby-identifier">token</span>.<span class="ruby-identifier">field</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">term</span>.<span class="ruby-identifier">downcase</span> } }
+      <span class="ruby-keyword">end</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  [<span class="ruby-identifier">must</span>, <span class="ruby-identifier">should</span>, <span class="ruby-identifier">must_not</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-create_bool_queries" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_bool_queries</span><span
+            class="method-args">(query_tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Create boolean query based with the given query tokens.</p>
+<dl class="rdoc-list note-list"><dt>query_tokens
+<dd>
+<p>An Array of query Tokens.</p>
+</dd></dl>
+
+<h3 id="method-i-create_bool_queries-label-Returns">Returns<span><a href="#method-i-create_bool_queries-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns an Array consists of must and must_not query arrays.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="create_bool_queries-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 155</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create_bool_queries</span>(<span class="ruby-identifier">query_tokens</span>)
+  <span class="ruby-identifier">must</span>, <span class="ruby-identifier">must_not</span> = [], []
+  <span class="ruby-identifier">query_tokens</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">token</span><span class="ruby-operator">|</span>
+    <span class="ruby-comment"># When the field is not given or invalid one, search by all fields.</span>
+    <span class="ruby-identifier">field</span> = <span class="ruby-identifier">token</span>.<span class="ruby-identifier">field</span> <span class="ruby-operator">||</span> <span class="ruby-ivar">@all_query_fields</span>
+    <span class="ruby-identifier">queries</span> = <span class="ruby-identifier">token</span>.<span class="ruby-identifier">minus?</span> <span class="ruby-operator">?</span> <span class="ruby-identifier">must_not</span> <span class="ruby-operator">:</span> <span class="ruby-identifier">must</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">field</span>.<span class="ruby-identifier">is_a?</span>(<span class="ruby-constant">String</span>)
+      <span class="ruby-identifier">queries</span> <span class="ruby-operator">&lt;&lt;</span> {
+        <span class="ruby-identifier">match</span><span class="ruby-operator">:</span> {
+          <span class="ruby-identifier">field</span> =<span class="ruby-operator">&gt;</span> <span class="ruby-identifier">token</span>.<span class="ruby-identifier">term</span>
+        }
+      }
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">queries</span> <span class="ruby-operator">&lt;&lt;</span> {
+        <span class="ruby-identifier">multi_match</span><span class="ruby-operator">:</span> {
+          <span class="ruby-identifier">fields</span><span class="ruby-operator">:</span> <span class="ruby-identifier">field</span>,
+          <span class="ruby-identifier">query</span><span class="ruby-operator">:</span> <span class="ruby-identifier">token</span>.<span class="ruby-identifier">term</span>
+        }
+      }
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  [<span class="ruby-identifier">must</span>, <span class="ruby-identifier">must_not</span>]
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-create_query" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">create_query</span><span
+            class="method-args">(query_hash, filter_hash)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Connect given query hash and filter hash objects.</p>
+<dl class="rdoc-list note-list"><dt>query_hash
+<dd>
+<p>A Hash represents a query hash.</p>
+</dd><dt>filter_hash
+<dd>
+<p>A Hash represents a filter hash.</p>
+</dd></dl>
+
+<h3 id="method-i-create_query-label-Returns">Returns<span><a href="#method-i-create_query-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns a Hash represents a query.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="create_query-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 98</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">create_query</span>(<span class="ruby-identifier">query_hash</span>, <span class="ruby-identifier">filter_hash</span>)
+  <span class="ruby-keyword">if</span> <span class="ruby-identifier">filter_hash</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span>
+    {
+      <span class="ruby-identifier">filtered</span><span class="ruby-operator">:</span> {
+        <span class="ruby-identifier">query</span><span class="ruby-operator">:</span> <span class="ruby-identifier">query_hash</span>,
+        <span class="ruby-identifier">filter</span><span class="ruby-operator">:</span> <span class="ruby-identifier">filter_hash</span>
+      }
+    }
+  <span class="ruby-keyword">else</span>
+    <span class="ruby-identifier">query_hash</span>
+  <span class="ruby-keyword">end</span>
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+      <div id="method-i-split_by_or_token" class="method-detail ">
+        
+        <div class="method-heading">
+          <span class="method-name">split_by_or_token</span><span
+            class="method-args">(tokens)</span>
+          
+          <span class="method-click-advice">click to toggle source</span>
+          
+        </div>
+        
+
+        <div class="method-description">
+          
+          <p>Divide the given tokens array into sub arrays by &#39;or&#39; token.</p>
+<dl class="rdoc-list note-list"><dt>tokens
+<dd>
+<p>An Array of Search::QueryBuilder::Token.</p>
+</dd></dl>
+
+<h3 id="method-i-split_by_or_token-label-Examples">Examples<span><a href="#method-i-split_by_or_token-label-Examples">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<pre class="ruby"><span class="ruby-identifier">split_by_or_token</span>([<span class="ruby-operator">&lt;</span><span class="ruby-constant">Query</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-constant">OR</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-constant">Query</span><span class="ruby-operator">&gt;</span>, <span class="ruby-operator">&lt;</span><span class="ruby-constant">Filter</span><span class="ruby-operator">&gt;</span>])
+<span class="ruby-comment">#=&gt; [[&lt;Query&gt;], [&lt;Query&gt;, &lt;Filter&gt;]]</span>
+</pre>
+
+<h3 id="method-i-split_by_or_token-label-Returns">Returns<span><a href="#method-i-split_by_or_token-label-Returns">&para;</a> <a href="#documentation">&uarr;</a></span></h3>
+
+<p>Returns an Array of Arrays of Tokens.</p>
+          
+          
+
+          
+          <div class="method-source-code" id="split_by_or_token-source">
+            <pre><span class="ruby-comment"># File lib/es-query-builder/parser.rb, line 80</span>
+<span class="ruby-keyword">def</span> <span class="ruby-identifier">split_by_or_token</span>(<span class="ruby-identifier">tokens</span>)
+  <span class="ruby-identifier">expressions</span> = [[]]
+  <span class="ruby-identifier">tokens</span>.<span class="ruby-identifier">each</span> <span class="ruby-keyword">do</span> <span class="ruby-operator">|</span><span class="ruby-identifier">token</span><span class="ruby-operator">|</span>
+    <span class="ruby-keyword">if</span> <span class="ruby-identifier">token</span>.<span class="ruby-identifier">or?</span>
+      <span class="ruby-identifier">expressions</span> <span class="ruby-operator">&lt;&lt;</span> []
+    <span class="ruby-keyword">else</span>
+      <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">last</span> <span class="ruby-operator">&lt;&lt;</span> <span class="ruby-identifier">token</span>
+    <span class="ruby-keyword">end</span>
+  <span class="ruby-keyword">end</span>
+  <span class="ruby-identifier">expressions</span>.<span class="ruby-identifier">select</span> { <span class="ruby-operator">|</span><span class="ruby-identifier">e</span><span class="ruby-operator">|</span> <span class="ruby-identifier">e</span>.<span class="ruby-identifier">size</span> <span class="ruby-operator">&gt;</span> <span class="ruby-value">0</span> }
+<span class="ruby-keyword">end</span></pre>
+          </div>
+          
+        </div>
+
+        
+
+        
+      </div>
+
+    
+    </section>
+  
+  </section>
+</main>
+
+
+<footer id="validator-badges" role="contentinfo">
+  <p><a href="http://validator.w3.org/check/referer">Validate</a>
+  <p>Generated by <a href="http://rdoc.rubyforge.org">RDoc</a> 4.1.2.
+  <p>Based on <a href="http://deveiate.org/projects/Darkfish-Rdoc/">Darkfish</a> by <a href="http://deveiate.org">Michael Granger</a>.
+</footer>
+
