@@ -90,6 +90,155 @@ describe EsQueryBuilder do
           end
         end
       end
+
+      context 'and it is constructed with nested_fields' do
+        let(:param) do
+          { nested_fields: { hoge: ['hoge.title'] } }
+        end
+
+        let(:all_query_fields) do
+          { nested: { hoge: ['hoge.title'] } }
+        end
+
+        it "returns a nested query for the specified nested path and fields" do
+          should eq(
+            {
+              bool: {
+                should: [
+                  {
+                    match: {
+                      '_all' => term
+                    }
+                  },
+                  {
+                    nested: {
+                      path: 'hoge',
+                      query: {
+                        multi_match: {
+                          fields: ['hoge.title'],
+                          query: term
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            '-' + term
+          end
+
+          it 'returns a must_not query for the specified query fields' do
+            should eq(
+              bool: {
+                must_not: [
+                  {
+                    bool: {
+                      should: [
+                        {
+                          match: {
+                            '_all' => term
+                          }
+                        },
+                        {
+                          nested: {
+                            path: 'hoge',
+                            query: {
+                              multi_match: {
+                                fields: ['hoge.title'],
+                                query: term
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            )
+          end
+        end
+      end
+
+      context 'and it is constructed with both fields and nested fields' do
+        let(:param) do
+          {
+            all_query_fields: ['hoge'],
+            nested_fields: { hoge: ['hoge.title'] }
+          }
+        end
+
+        it "returns a nested query for the specified nested path and fields" do
+          should eq(
+            {
+              bool: {
+                should: [
+                  {
+                    multi_match: {
+                      fields: ['hoge'],
+                      query: term
+                    }
+                  },
+                  {
+                    nested: {
+                      path: 'hoge',
+                      query: {
+                        multi_match: {
+                          fields: ['hoge.title'],
+                          query: term
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            '-' + term
+          end
+
+          it 'returns a must_not query for the specified query fields' do
+            should eq(
+              bool: {
+                must_not: [
+                  {
+                    bool: {
+                      should: [
+                        {
+                          multi_match: {
+                            fields: ['hoge'],
+                            query: term
+                          }
+                        },
+                        {
+                          nested: {
+                            path: 'hoge',
+                            query: {
+                              multi_match: {
+                                fields: ['hoge.title'],
+                                query: term
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            )
+          end
+        end
+      end
     end
 
     context 'when term queries are given' do
@@ -202,6 +351,73 @@ describe EsQueryBuilder do
                   field1 => term_1
                 }
               }
+            }
+          )
+        end
+      end
+
+      context 'and it is constructed with nested_fields' do
+        let(:param) do
+          { nested_fields: { nested_path => nested_fields } }
+        end
+
+        let(:nested_path) do
+          'hoge'
+        end
+
+        let(:nested_fields) do
+          ['hoge.title']
+        end
+
+        it 'returns a bool query with must match queries' do
+          should eq(
+            bool: {
+              must: [
+                {
+                  bool: {
+                    should: [
+                      {
+                        match: {
+                          '_all' => term_1
+                        }
+                      },
+                      {
+                        nested: {
+                          path: nested_path,
+                          query: {
+                            multi_match: {
+                              fields: nested_fields,
+                              query: term_1,
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  bool: {
+                    should: [
+                      {
+                        match: {
+                          '_all' => term_2
+                        }
+                      },
+                      {
+                        nested: {
+                          path: nested_path,
+                          query: {
+                            multi_match: {
+                              fields: nested_fields,
+                              query: term_2,
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
             }
           )
         end
