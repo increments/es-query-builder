@@ -165,7 +165,85 @@ describe EsQueryBuilder do
         end
       end
 
-      context 'and it is constructed with both fields and nested fields' do
+      context 'and it is constructed with child_fields' do
+        let(:param) do
+          { child_fields: { child_type => child_field } }
+        end
+
+        let(:child_type) do
+          'hoge'
+        end
+
+        let(:child_field) do
+          ['title']
+        end
+
+        it "returns a has_child query for the specified child field" do
+          should eq(
+            {
+              bool: {
+                should: [
+                  {
+                    match: {
+                      '_all' => term
+                    }
+                  },
+                  {
+                    has_child: {
+                      type: child_type,
+                      query: {
+                        multi_match: {
+                          fields: child_field,
+                          query: term
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            '-' + term
+          end
+
+          it 'returns a must_not query for the specified query fields' do
+            should eq(
+              bool: {
+                must_not: [
+                  {
+                    bool: {
+                      should: [
+                        {
+                          match: {
+                            '_all' => term
+                          }
+                        },
+                        {
+                          has_child: {
+                            type: child_type,
+                            query: {
+                              multi_match: {
+                                fields: child_field,
+                                query: term
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            )
+          end
+        end
+      end
+
+      context 'and it is constructed with both all_query_fields and nested fields' do
         let(:param) do
           {
             all_query_fields: ['hoge'],
@@ -225,6 +303,199 @@ describe EsQueryBuilder do
                             query: {
                               multi_match: {
                                 fields: ['hoge.title'],
+                                query: term
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            )
+          end
+        end
+      end
+
+      context 'and it is constructed with both all_query_fields and child_fields' do
+        let(:param) do
+          {
+            all_query_fields: ['hoge'],
+            child_fields: { hoge: ['hoge.title'] }
+          }
+        end
+
+        it "returns a nested query for the specified nested path and fields" do
+          should eq(
+            {
+              bool: {
+                should: [
+                  {
+                    multi_match: {
+                      fields: ['hoge'],
+                      query: term
+                    }
+                  },
+                  {
+                    has_child: {
+                      type: 'hoge',
+                      query: {
+                        multi_match: {
+                          fields: ['hoge.title'],
+                          query: term
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            '-' + term
+          end
+
+          it 'returns a must_not query for the specified query fields' do
+            should eq(
+              bool: {
+                must_not: [
+                  {
+                    bool: {
+                      should: [
+                        {
+                          multi_match: {
+                            fields: ['hoge'],
+                            query: term
+                          }
+                        },
+                        {
+                          has_child: {
+                            type: 'hoge',
+                            query: {
+                              multi_match: {
+                                fields: ['hoge.title'],
+                                query: term
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            )
+          end
+        end
+      end
+
+      context 'and it is constructed with all_query_fields, nested_fields, child_fields' do
+        let(:param) do
+          {
+            all_query_fields: all_query_fields,
+            nested_fields: { nested_path => nested_fields },
+            child_fields: { child_type => child_fields },
+          }
+        end
+
+        let(:all_query_fields) do
+          ['parent_field1']
+        end
+
+        let(:nested_path) do
+          'hoge'
+        end
+
+        let(:nested_fields) do
+          ['hoge.field1']
+        end
+
+        let(:child_type) do
+          'fuga'
+        end
+
+        let(:child_fields) do
+          ['child_field1']
+        end
+
+        it "returns a bool query for the match in nested or child" do
+          should eq(
+            {
+              bool: {
+                should: [
+                  {
+                    multi_match: {
+                      fields: all_query_fields,
+                      query: term
+                    }
+                  },
+                  {
+                    nested: {
+                      path: nested_path,
+                      query: {
+                        multi_match: {
+                          fields: nested_fields,
+                          query: term
+                        }
+                      }
+                    }
+                  },
+                  {
+                    has_child: {
+                      type: child_type,
+                      query: {
+                        multi_match: {
+                          fields: child_fields,
+                          query: term
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            '-' + term
+          end
+
+          it 'returns a must_not query for the specified query fields' do
+            should eq(
+              bool: {
+                must_not: [
+                  {
+                    bool: {
+                      should: [
+                        {
+                          multi_match: {
+                            fields: all_query_fields,
+                            query: term
+                          }
+                        },
+                        {
+                          nested: {
+                            path: nested_path,
+                            query: {
+                              multi_match: {
+                                fields: nested_fields,
+                                query: term
+                              }
+                            }
+                          }
+                        },
+                        {
+                          has_child: {
+                            type: child_type,
+                            query: {
+                              multi_match: {
+                                fields: child_fields,
                                 query: term
                               }
                             }
@@ -409,6 +680,73 @@ describe EsQueryBuilder do
                           query: {
                             multi_match: {
                               fields: nested_fields,
+                              query: term_2,
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          )
+        end
+      end
+
+      context 'and it is constructed with child_fields' do
+        let(:param) do
+          { child_fields: { child_type => child_fields } }
+        end
+
+        let(:child_type) do
+          'hoge'
+        end
+
+        let(:child_fields) do
+          ['hoge.title']
+        end
+
+        it 'returns a bool query with must match queries' do
+          should eq(
+            bool: {
+              must: [
+                {
+                  bool: {
+                    should: [
+                      {
+                        match: {
+                          '_all' => term_1
+                        }
+                      },
+                      {
+                        has_child: {
+                          type: child_type,
+                          query: {
+                            multi_match: {
+                              fields: child_fields,
+                              query: term_1,
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  bool: {
+                    should: [
+                      {
+                        match: {
+                          '_all' => term_2
+                        }
+                      },
+                      {
+                        has_child: {
+                          type: child_type,
+                          query: {
+                            multi_match: {
+                              fields: child_fields,
                               query: term_2,
                             }
                           }

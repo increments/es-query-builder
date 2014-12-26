@@ -18,10 +18,12 @@ class EsQueryBuilder
     #                    character as a hierarchy (default: []).
     #
     # Returns nothing.
-    def initialize(all_query_fields: '_all', hierarchy_fields: [], nested_fields: {})
+    def initialize(all_query_fields: '_all', hierarchy_fields: [],
+                   nested_fields: {}, child_fields: {})
       @all_query_fields = all_query_fields
       @hierarchy_fields = hierarchy_fields
       @nested_fields = nested_fields
+      @child_fields = child_fields
     end
 
     # Public: Parse the given tokens and build a query hash.
@@ -166,11 +168,19 @@ class EsQueryBuilder
             @nested_fields.each do |nested_path, nested_field|
               should << create_nested_match_query(nested_path, nested_field, token.term)
             end
+            @child_fields.each do |child_type, child_field|
+              should << create_has_child_match_query(child_type, child_field, token.term)
+            end
             connect_queries(should)
 
           # When the specify nested field
           elsif nested_field = @nested_fields[token.field_namespace]
             create_nested_match_query(token.field_namespace, nested_field, token.term)
+
+          # When the specify child field
+          elsif child_field = @child_fields[token.field_namespace]
+            create_has_child_match_query(token.field_namespace, child_field, token.term)
+
           # When the specify standard field
           else
             create_match_query(token.field, token.term)
@@ -200,6 +210,15 @@ class EsQueryBuilder
       {
         nested: {
           path: path.to_s,
+          query: create_match_query(field, term)
+        }
+      }
+    end
+
+    def create_has_child_match_query(child_type, field, term)
+      {
+        has_child: {
+          type: child_type.to_s,
           query: create_match_query(field, term)
         }
       }

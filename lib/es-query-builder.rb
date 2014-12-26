@@ -48,12 +48,13 @@ class EsQueryBuilder
   # Returns nothing.
   def initialize(query_fields: [], filter_fields: [],
                  all_query_fields: '_all', hierarchy_fields: [],
-                 nested_fields: {})
+                 nested_fields: {}, child_fields: {})
     @query_fields = query_fields
     @filter_fields = filter_fields
     @all_query_fields = all_query_fields
     @hierarchy_fields = hierarchy_fields
     @nested_fields = nested_fields
+    @child_fields = child_fields
   end
 
   # Public: Convert the given query string into a query object.
@@ -93,6 +94,7 @@ class EsQueryBuilder
     @parser ||= Parser.new(
       all_query_fields: @all_query_fields,
       hierarchy_fields:  @hierarchy_fields,
-      nested_fields: @nested_fields)
+      nested_fields: @nested_fields,
+      child_fields: @child_fields)
   end
 end
