@@ -18,9 +18,12 @@ class EsQueryBuilder
     #                    character as a hierarchy (default: []).
     #
     # Returns nothing.
-    def initialize(all_query_fields = '_all', hierarchy_fields = [])
+    def initialize(all_query_fields: '_all', hierarchy_fields: [],
+                   nested_fields: {}, child_fields: {})
       @all_query_fields = all_query_fields
       @hierarchy_fields = hierarchy_fields
+      @nested_fields = nested_fields
+      @child_fields = child_fields
     end
 
     # Public: Parse the given tokens and build a query hash.
@@ -155,25 +158,70 @@ class EsQueryBuilder
     def create_bool_queries(query_tokens)
       must, must_not = [], []
       query_tokens.each do |token|
-        # When the field is not given or invalid one, search by all fields.
-        field = token.field || @all_query_fields
         queries = token.minus? ? must_not : must
-        if field.is_a?(String)
-          queries << {
-            match: {
-              field => token.term
-            }
-          }
-        else
-          queries << {
-            multi_match: {
-              fields: field,
-              query: token.term
-            }
-          }
-        end
+
+        queries <<
+          # When the field is not given or invalid one, search by all fields.
+          if token.field.nil?
+            should = []
+            should << create_match_query(@all_query_fields, token.term)
+            @nested_fields.each do |nested_path, nested_field|
+              should << create_nested_match_query(nested_path, nested_field, token.term)
+            end
+            @child_fields.each do |child_type, child_field|
+              should << create_has_child_match_query(child_type, child_field, token.term)
+            end
+            connect_queries(should)
+
+          # When the specify nested field
+          elsif nested_field = @nested_fields[token.field_namespace]
+            create_nested_match_query(token.field_namespace, nested_field, token.term)
+
+          # When the specify child field
+          elsif child_field = @child_fields[token.field_namespace]
+            create_has_child_match_query(token.field_namespace, child_field, token.term)
+
+          # When the specify standard field
+          else
+            create_match_query(token.field, token.term)
+          end
       end
       [must, must_not]
+    end
+
+    def create_match_query(field, term)
+      if field.is_a?(String)
+        {
+          match: {
+            field => term
+          }
+        }
+      else
+        {
+          multi_match: {
+            fields: field,
+            query: term
+          }
+        }
+      end
+    end
+
+    def create_nested_match_query(path, field, term)
+      {
+        nested: {
+          path: path.to_s,
+          query: create_match_query(field, term)
+        }
+      }
+    end
+
+    def create_has_child_match_query(child_type, field, term)
+      {
+        has_child: {
+          type: child_type.to_s,
+          query: create_match_query(field, term)
+        }
+      }
     end
 
     # Internal: Create boolean filter based on the filter matches.

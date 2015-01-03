@@ -1,6 +1,6 @@
 class EsQueryBuilder
   class Token
-    attr_reader :full, :field, :term
+    attr_reader :full, :field, :term, :field_namespace
 
     TYPE_KINDS = %i(query filter or).freeze
 
@@ -10,6 +10,7 @@ class EsQueryBuilder
       @field = field
       @term = term
       @type = type
+      @field_namespace = field.to_s[/^(.+?)\./, 1]
     end
 
     def minus?
