@@ -12,8 +12,8 @@ class EsQueryBuilder
   class Parser
     # Public: Construct the parser object.
     #
-    # query_fields     - An Array of Strings for specifing allowed quering
-    #                    types (default: []).
+    # all_query_fields - A String or an Array of Strings for searching usual
+    #                    query terms (default: '_all').
     # hierarchy_fields - An Array of Strings which treats the trailing slash
     #                    character as a hierarchy (default: []).
     #
@@ -236,30 +236,24 @@ class EsQueryBuilder
     #   create_bool_filters([...])
     #   # => [[{ term: { tag: 'foo' }}, { term: { tag: 'bar' }], [], []]
     #
-    #   # When '-tag:foo'
-    #   create_bool_filters([...])
-    #   # => [[], [], [{ term: { tag: 'foo' } }]]
-    #
-    #   # Suppose @hierarchy_fields contains 'tag'
-    #
-    #   # When 'tag:foo/'
+    #   # When 'tag:foo'
     #   create_bool_filters([...])
     #   # => [[], [{ term: { tag: 'foo' } }, { prefix: { tag: 'foo/' } }], []]
     #
-    #   # When '-tag:foo/'
+    #   # When '-tag:foo'
     #   create_bool_filters([...])
-    #   # => [[], [], [{ prefix: { tag: 'foo/' } }, { term: { tag: 'foo' } }]]
+    #   # => [[], [], [{ term: { tag: 'foo' } }, { prefix: { tag: 'foo/' } }]]
     #
     # Returns an Array consists of must, should and must_not filters arrays.
     def create_bool_filters(filter_tokens)
       must, should, must_not = [], [], []
       filter_tokens.each do |token|
         token.term.split.each do |term|
-          if @hierarchy_fields.include?(token.field) && term.end_with?('/')
+          if @hierarchy_fields.include?(token.field)
             cond = token.minus? ? must_not : should
-            cond << { prefix: { token.field => term.downcase } }
+            cond << { prefix: { token.field => term.downcase + '/' } }
             # Exactly matches to the tag.
-            cond << { term: { token.field => term[0...-1].downcase } }
+            cond << { term: { token.field => term.downcase } }
           else
             cond = token.minus? ? must_not : must
             cond << { term: { token.field => term.downcase } }

@@ -522,7 +522,7 @@ describe EsQueryBuilder do
         end
 
         let(:query_string) do
-          "#{hierarchy_field}:#{term}/"
+          "#{hierarchy_field}:#{term}"
         end
 
         it 'returns both slash-ending-prefix and term filters' do
