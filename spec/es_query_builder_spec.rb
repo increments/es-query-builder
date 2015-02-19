@@ -510,6 +510,40 @@ describe EsQueryBuilder do
           end
         end
       end
+
+      context 'and it is constructed with filter_fields and hierarchy_fields' do
+        let(:param) do
+          { filter_fields: [hierarchy_field],
+            hierarchy_fields: [hierarchy_field] }
+        end
+
+        let(:hierarchy_field) do
+          'hierarchy_field'
+        end
+
+        let(:query_string) do
+          "#{hierarchy_field}:#{term}/"
+        end
+
+        it 'returns both slash-ending-prefix and term filters' do
+          should eq(
+            filtered: {
+              query: {
+                match_all: {},
+              },
+              filter: {
+                bool: {
+                  should: [
+                    { prefix: { hierarchy_field => term + '/' } },
+                    { term: { hierarchy_field => term } }
+                  ],
+                  _cache: true
+                }
+              }
+            }
+          )
+        end
+      end
     end
 
     context 'when term queries are given' do
