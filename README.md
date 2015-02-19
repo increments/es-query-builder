@@ -1,12 +1,14 @@
-[![Build Status](https://travis-ci.org/increments/es-query-builder.svg?branch=master)](https://travis-ci.org/increments/es-query-builder)
+# EsQueryBuilder
 
-NAME
-====
+[![Build Status](https://travis-ci.org/increments/es-query-builder.svg?branch=master)](https://travis-ci.org/increments/es-query-builder) [![Code Climate](https://codeclimate.com/github/increments/es-query-builder/badges/gpa.svg)](https://codeclimate.com/github/increments/es-query-builder) [![Coverage Status](https://coveralls.io/repos/increments/es-query-builder/badge.svg)](https://coveralls.io/r/increments/es-query-builder) [![Dependency Status](https://gemnasium.com/increments/es-query-builder.svg)](https://gemnasium.com/increments/es-query-builder)
 
-`EsQueryBuilder` - A query builder for Elasticsearch in Ruby.
+A query builder for Elasticsearch in Ruby.
 
-SYNOPSIS
-========
+## Usage
+
+```rb
+gem 'es-query-builder'
+```
 
 ```ruby
 builder = EsQueryBuilder.new(
@@ -39,23 +41,10 @@ client.search({
 # => #<Hash>
 ```
 
-DESCRIPTION
-===========
+## Description
 
 `EsQueryBuilder` converts a query string into a corresponding hash object for [elasticsearch-ruby](https://github.com/elasticsearch/elasticsearch-ruby).
 
 Elasticsearch supports [query_string query](http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-query-string-query.html) dsl which is very useful to use internally, but too powerful to use as public interface. Allowing anonymous users to use the dsl may cause not only performance problems but also security risks if your index includes secret types.
 
 This gem accepts the query_string-query-dsl-like string and converts the string into a query object using other query dsls. At the same time it sanitizes fields in the query.
-
-INSTALLATION
-============
-
-```bash
-gem install es-query-builder
-```
-
-LICENSE
-=======
-
-This software is licensed under [MIT license](https://github.com/increments/es-query-builder/tree/master/LICENSE.txt).

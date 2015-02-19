@@ -1,3 +1,6 @@
+require 'coveralls'
+Coveralls.wear!
+
 require 'es-query-builder'
 
 RSpec.configure do |config|
