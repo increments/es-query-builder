@@ -536,12 +536,79 @@ describe EsQueryBuilder do
                   should: [
                     { prefix: { hierarchy_field => term + '/' } },
                     { term: { hierarchy_field => term } }
-                  ],
-                  _cache: true
+                  ]
                 }
               }
             }
           )
+        end
+
+        context 'and the query starts with a minus char' do
+          let(:query_string) do
+            "-#{hierarchy_field}:#{term}"
+          end
+
+          it 'returns must_not filter' do
+            should eq(
+              filtered: {
+                query: {
+                  match_all: {},
+                },
+                filter: {
+                  bool: {
+                    must_not: [
+                      { prefix: { hierarchy_field => term + '/' } },
+                      { term: { hierarchy_field => term } }
+                    ],
+                    _cache: true
+                  }
+                }
+              }
+            )
+          end
+        end
+
+        context 'and there are multiple filtered query terms' do
+          let(:query_string) do
+            "#{hierarchy_field}:#{term} #{hierarchy_field}:#{term2}"
+          end
+
+          let(:term2) do
+            'world'
+          end
+
+          it 'returns both slash-ending-prefix and term filters' do
+            should eq(
+              filtered: {
+                query: {
+                  match_all: {},
+                },
+                filter: {
+                  bool: {
+                    must: [
+                      {
+                        bool: {
+                          should: [
+                            { prefix: { hierarchy_field => term + '/' } },
+                            { term: { hierarchy_field => term } }
+                          ]
+                        }
+                      },
+                      {
+                        bool: {
+                          should: [
+                            { prefix: { hierarchy_field => term2 + '/' } },
+                            { term: { hierarchy_field => term2 } }
+                          ]
+                        }
+                      },
+                    ],
+                    _cache: true
+                  }
+                }
+              }
+            )
+          end
         end
       end
     end
