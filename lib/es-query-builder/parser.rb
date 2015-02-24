@@ -136,14 +136,13 @@ class EsQueryBuilder
     # Returns a Hash represents a filter hash.
     def build_filter_hash(filter_tokens)
       return {} if filter_tokens.empty?
-      must, should, must_not = create_bool_filters(filter_tokens)
-      if must.size == 1 && should.empty? && must_not.empty?
+      must, must_not = create_bool_filters(filter_tokens)
+      if must.size == 1 && must_not.empty?
         # Term filter is cached by default.
         must.first
       else
         bool = {}
         bool[:must]     = must     if must.size > 0
-        bool[:should]   = should   if should.size > 0
         bool[:must_not] = must_not if must_not.size > 0
         # Bool filter is not cached by default.
         { bool: bool.merge(_cache: true) }
@@ -232,13 +231,9 @@ class EsQueryBuilder
     #
     # Examples
     #
-    #   # When 'tag:"foo bar"'
-    #   create_bool_filters([...])
-    #   # => [[{ term: { tag: 'foo' }}, { term: { tag: 'bar' }], [], []]
-    #
     #   # When 'tag:foo'
     #   create_bool_filters([...])
-    #   # => [[], [{ term: { tag: 'foo' } }, { prefix: { tag: 'foo/' } }], []]
+    #   # => [[ { bool: { should: [{ term: { tag: 'foo' } }, { prefix: { tag: 'foo/' } }] } }], []]
     #
     #   # When '-tag:foo'
     #   create_bool_filters([...])
@@ -246,21 +241,31 @@ class EsQueryBuilder
     #
     # Returns an Array consists of must, should and must_not filters arrays.
     def create_bool_filters(filter_tokens)
-      must, should, must_not = [], [], []
+      must, must_not = [], []
       filter_tokens.each do |token|
         token.term.split.each do |term|
           if @hierarchy_fields.include?(token.field)
-            cond = token.minus? ? must_not : should
-            cond << { prefix: { token.field => term.downcase + '/' } }
-            # Exactly matches to the tag.
-            cond << { term: { token.field => term.downcase } }
+            if token.minus?
+              must_not << { prefix: { token.field => term.downcase + '/' } }
+              must_not << { term: { token.field => term.downcase } }
+            else
+              must << {
+                bool: {
+                  should: [
+                    { prefix: { token.field => term.downcase + '/' } },
+                    # Exactly matches to the tag.
+                    { term: { token.field => term.downcase } },
+                  ]
+                }
+              }
+            end
           else
             cond = token.minus? ? must_not : must
             cond << { term: { token.field => term.downcase } }
           end
         end
       end
-      [must, should, must_not]
+      [must, must_not]
     end
   end
 end
